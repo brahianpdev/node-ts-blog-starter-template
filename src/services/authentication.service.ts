@@ -14,111 +14,135 @@ import Token from "../models/token.model";
 
 export class AuthenticationService {
   async register(registerDTO: RegisterDTO) {
-    if (await new UsersService().findUserByEmail(registerDTO.email)) {
-      throw new Error("User with this email already exists");
+    try {
+      if (await new UsersService().findUserByEmail(registerDTO.email)) {
+        throw new Error("User with this email already exists");
+      }
+
+      const hashedPassword = await bcrypt.hash(registerDTO.password, 10);
+      const user = await new UsersService().createUser({
+        ...registerDTO,
+        password: hashedPassword,
+      });
+
+      user.password = undefined;
+
+      const tokenData = await this.generateJwt({ ...user });
+      const cookie = await this.createCookie(tokenData);
+
+      const token = await new Token({
+        userId: user._id,
+        token:
+          Math.random().toString(36).substring(2, 15) +
+          Math.random().toString(36).substring(2, 15),
+      });
+
+      token.save();
+
+      const message = `${enviromentConfig.app.url}/verify/${user._id}/${token.token}`;
+      await new NodemailerService().sendEmail(
+        user.email,
+        "Verify Email",
+        message
+      );
+
+      return { user, cookie };
+    } catch (error) {
+      throw new Error(error);
     }
-
-    const hashedPassword = await bcrypt.hash(registerDTO.password, 10);
-    const user = await new UsersService().createUser({
-      ...registerDTO,
-      password: hashedPassword,
-    });
-
-    user.password = undefined;
-
-    const tokenData = await this.generateJwt({ ...user });
-    const cookie = await this.createCookie(tokenData);
-
-    const token = await new Token({
-      userId: user._id,
-      token:
-        Math.random().toString(36).substring(2, 15) +
-        Math.random().toString(36).substring(2, 15),
-    });
-
-    token.save();
-
-    const message = `${enviromentConfig.app.url}/verify/${user._id}/${token.token}`;
-    await new NodemailerService().sendEmail(
-      user.email,
-      "Verify Email",
-      message
-    );
-
-    return { user, cookie };
   }
 
   async generateJwt(user: User): Promise<TokenData> {
-    const expiresIn = 60 * 60;
-    const secret = enviromentConfig.jwt.secret;
-    const dataStoredInToken: DataStoredInToken = {
-      _id: user._id,
-    };
-    return {
-      expiresIn,
-      token: jwt.sign(dataStoredInToken, secret, { expiresIn }),
-    };
+    try {
+      const expiresIn = 60 * 60;
+      const secret = enviromentConfig.jwt.secret;
+      const dataStoredInToken: DataStoredInToken = {
+        _id: user._id,
+      };
+      return {
+        expiresIn,
+        token: jwt.sign(dataStoredInToken, secret, { expiresIn }),
+      };
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   async createCookie(tokenData: TokenData) {
-    const cookie = `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn}`;
-    return cookie;
+    try {
+      const cookie = `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn}`;
+      return cookie;
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   async findByEmail(email: string): Promise<User> {
-    return await new UsersService().findUserByEmail(email);
+    try {
+      return await new UsersService().findUserByEmail(email);
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   async login(loginDTO: LogInDto) {
-    const user = await this.findByEmail(loginDTO.email);
+    try {
+      const user = await this.findByEmail(loginDTO.email);
 
-    if (user) {
-      if (!user.isEmailConfirmed) {
-        throw new Error("User email is not confirmed");
-      }
+      if (user) {
+        if (!user.isEmailConfirmed) {
+          throw new Error("User email is not confirmed");
+        }
 
-      const isPasswordMatching = await bcrypt.compare(
-        loginDTO.password,
-        user.password
-      );
+        const isPasswordMatching = await bcrypt.compare(
+          loginDTO.password,
+          user.password
+        );
 
-      if (isPasswordMatching) {
-        const tokenData = await this.generateJwt(user);
-        const cookie = await this.createCookie(tokenData);
-        return { user, cookie };
+        if (isPasswordMatching) {
+          const tokenData = await this.generateJwt(user);
+          const cookie = await this.createCookie(tokenData);
+          return { user, cookie };
+        } else {
+          throw new Error("Wrong credentials");
+        }
       } else {
         throw new Error("Wrong credentials");
       }
-    } else {
-      throw new Error("Wrong credentials");
+    } catch (error) {
+      throw new Error(error);
     }
   }
 
   async verifyAccount(userId: string, token: string) {
-    const user = await new UsersService().findUserById(userId);
+    try {
+      const user = await new UsersService().findUserById(userId);
 
-    if (user) {
-      const tokenFromDb = await Token.findOne({ userId, token });
+      if (user) {
+        const tokenFromDb = await Token.findOne({ userId, token });
 
-      if (tokenFromDb) {
-        user.isEmailConfirmed = true;
-        await user.save();
+        if (tokenFromDb) {
+          user.isEmailConfirmed = true;
+          await user.save();
 
-        const message = `Your account is confirmed`;
+          const message = `Your account is confirmed`;
 
-        await new NodemailerService().sendEmail(
-          user.email,
-          "Verify Email",
-          message
-        );
+          await new NodemailerService().sendEmail(
+            user.email,
+            "Verify Email",
+            message
+          );
 
-        user.password = undefined;
-        return user;
+          user.password = undefined;
+          return user;
+        } else {
+          throw new Error("Invalid token");
+        }
       } else {
-        throw new Error("Invalid token");
+        throw new Error("User not found");
       }
-    } else {
-      throw new Error("User not found");
+    } catch (error) {
+      throw new Error(error);
     }
   }
 }

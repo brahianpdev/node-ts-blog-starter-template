@@ -5,33 +5,53 @@ import Post from "../models/post.model";
 
 export class PostsService {
   async findAll() {
-    return await Post.find();
+    try {
+      return await Post.find();
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   async findById(id: string) {
-    return await Post.findById(id);
+    try {
+      return await Post.findById(id);
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   async create(createPostDTO: CreatePostDTO, author: User) {
-    const postInDB = await Post.findOne({ title: createPostDTO.title });
+    try {
+      const postInDB = await Post.findOne({ title: createPostDTO.title });
 
-    if (postInDB.lowerCase()) {
-      throw new Error("Post with this title already exists");
+      if (postInDB.lowerCase()) {
+        throw new Error("Post with this title already exists");
+      }
+
+      const post = new Post({
+        ...createPostDTO,
+        author,
+      });
+
+      return await post.save();
+    } catch (error) {
+      throw new Error(error);
     }
-
-    const post = new Post({
-      ...createPostDTO,
-      author,
-    })
-
-    return await post.save();
   }
 
   async update(id: string, updatePostDTO: UpdatePostDTO) {
-    return await Post.findByIdAndUpdate(id, updatePostDTO, { new: true });
+    try {
+      return await Post.findByIdAndUpdate(id, updatePostDTO, { new: true });
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   async delete(id: string) {
-    return await Post.findByIdAndDelete(id);
+    try {
+      return await Post.findByIdAndDelete(id);
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }

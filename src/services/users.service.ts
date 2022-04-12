@@ -4,39 +4,67 @@ import User from "../models/user.model";
 
 export class UsersService {
   async getAllUsers() {
-    return await User.find();
+    try {
+      return await User.find();
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   async findUserByEmail(email: string) {
-    return await User.findOne({ email });
+    try {
+      return await User.findOne({ email });
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   async findUserById(id: string) {
-    return await User.findById(id);
+    try {
+      return await User.findById(id);
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   async createUser(registerDTO: RegisterDTO) {
-    const user = new User(registerDTO);
-    const userExist = await this.findUserByEmail(registerDTO.email);
+    try {
+      const user = new User(registerDTO);
+      const userExist = await this.findUserByEmail(registerDTO.email);
 
-    if (userExist) {
-      throw new Error("User already exist");
+      if (userExist) {
+        throw new Error("User already exist");
+      }
+
+      return user.save();
+    } catch (error) {
+      throw new Error(error);
     }
-
-    return user.save();
   }
 
   async updateUser(id: string, updateUserDTO: UpdateUserDTO) {
-    return await User.findByIdAndUpdate(id, updateUserDTO);
+    try {
+      return await User.findByIdAndUpdate(id, updateUserDTO);
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   async verifyEmail(id: string) {
-    return await User.findByIdAndUpdate(id, {
-      isEmailConfirmed: true,
-    });
+    try {
+      return await User.findByIdAndUpdate(id, {
+        isEmailConfirmed: true,
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   async deleteUser(id: string) {
-    return await User.findByIdAndDelete(id);
+    try {
+      return await User.findByIdAndDelete(id);
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }
