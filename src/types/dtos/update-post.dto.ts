@@ -4,6 +4,8 @@ export class UpdatePostDTO {
   @IsString()
   title?: string;
 
+  state?: boolean;
+
   @IsString()
   content?: string;
 }
