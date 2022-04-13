@@ -39,7 +39,7 @@ export class AuthenticationService {
 
       token.save();
 
-      const message = `${enviromentConfig.app.url}/verify/${user._id}/${token.token}`;
+      const message = `${enviromentConfig.app.url}/auth/verify/${user._id}/${token.token}`;
       await new NodemailerService().sendEmail(
         user.email,
         "Verify Email",
