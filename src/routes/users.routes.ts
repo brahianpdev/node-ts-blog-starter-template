@@ -8,9 +8,9 @@ import { UpdateUserDTO } from "../types/dtos/update-user.dto";
 
 routes
   .get("/", usersController.getAllUsers)
-  .get("/:email", authMiddleware, usersController.findUserByEmail)
+  .get("/email/:email", authMiddleware, usersController.findUserByEmail)
   .get("/:id", usersController.findUserById)
-  .put("/:id", authMiddleware, validationMiddleware(UpdateUserDTO), usersController.updateUser)
-  .delete("/:id", authMiddleware, usersController.deleteUser);
+  .put("/update/:id", authMiddleware, validationMiddleware(UpdateUserDTO), usersController.updateUser)
+  .delete("/delete/:id", authMiddleware, usersController.deleteUser);
 
 export default routes;
