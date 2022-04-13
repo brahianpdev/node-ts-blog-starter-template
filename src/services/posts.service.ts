@@ -6,7 +6,7 @@ import Post from "../models/post.model";
 export class PostsService {
   async findAll() {
     try {
-      return await Post.find();
+      return await Post.find({ status: true });
     } catch (error) {
       throw new Error(error);
     }
@@ -24,8 +24,8 @@ export class PostsService {
     try {
       const postInDB = await Post.findOne({ title: createPostDTO.title });
 
-      if (postInDB.lowerCase()) {
-        throw new Error("Post with this title already exists");
+      if (postInDB) {
+        throw new Error("Post already exists");
       }
 
       const post = new Post({
@@ -42,6 +42,22 @@ export class PostsService {
   async update(id: string, updatePostDTO: UpdatePostDTO) {
     try {
       return await Post.findByIdAndUpdate(id, updatePostDTO, { new: true });
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async remove(id: string) {
+    try {
+      return await Post.findByIdAndUpdate(id, { status: false }, { new: true });
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async publish(id: string) {
+    try {
+      return await Post.findByIdAndUpdate(id, { status: true }, { new: true });
     } catch (error) {
       throw new Error(error);
     }

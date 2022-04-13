@@ -38,7 +38,7 @@ class PostsController {
     return res.json({
       message: "Post created successfully",
       post,
-    })
+    });
   }
 
   async update(req: Request, res: Response) {
@@ -55,6 +55,40 @@ class PostsController {
 
     res.json({
       message: "Post updated successfully",
+      post,
+    });
+  }
+
+  async remove(req: Request, res: Response) {
+    const { id } = req.params;
+
+    const post = await new PostsService().remove(id);
+
+    if (!post) {
+      return res.status(404).json({
+        message: "Post not found",
+      });
+    }
+
+    res.json({
+      message: "Post removed successfully",
+      post,
+    });
+  }
+
+  async publish(req: Request, res: Response) {
+    const { id } = req.params;
+
+    const post = await new PostsService().publish(id);
+
+    if (!post) {
+      return res.status(404).json({
+        message: "Post not found",
+      });
+    }
+
+    res.json({
+      message: "Post published successfully",
       post,
     });
   }
