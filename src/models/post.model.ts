@@ -10,6 +10,10 @@ const Post = new Schema({
     type: String,
     required: true,
   },
+  status: {
+    type: Boolean,
+    default: true,
+  },
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
