@@ -46,7 +46,7 @@ export class AuthenticationService {
         message
       );
 
-      return { user, cookie };
+      return { cookie };
     } catch (error) {
       throw new Error(error);
     }
