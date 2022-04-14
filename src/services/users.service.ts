@@ -1,3 +1,5 @@
+import bcrypt from "bcrypt";
+
 import { UpdateUserDTO } from "../types/dtos/update-user.dto";
 import { RegisterDTO } from "../types/dtos/register.dto";
 import User from "../models/user.model";
@@ -21,7 +23,11 @@ export class UsersService {
 
   async findUserById(id: string) {
     try {
-      return await User.findById(id);
+      const user = await User.findById(id);
+      if (!user) {
+        throw new Error("User not found");
+      }
+      return user;
     } catch (error) {
       throw new Error(error);
     }
@@ -44,7 +50,13 @@ export class UsersService {
 
   async updateUser(id: string, updateUserDTO: UpdateUserDTO) {
     try {
-      return await User.findByIdAndUpdate(id, updateUserDTO);
+      const user = await User.findByIdAndUpdate(id, updateUserDTO, {
+        new: true,
+      });
+      const hashedPassword = await bcrypt.hash(updateUserDTO.password, 10);
+      user.password = hashedPassword;
+
+      return user.save();
     } catch (error) {
       throw new Error(error);
     }
