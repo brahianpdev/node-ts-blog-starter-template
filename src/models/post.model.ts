@@ -6,6 +6,10 @@ const Post = new Schema({
     type: String,
     required: true,
   },
+  image: {
+    type: String,
+    required: false,
+  },
   content: {
     type: String,
     required: true,
@@ -13,6 +17,14 @@ const Post = new Schema({
   status: {
     type: Boolean,
     default: true,
+  },
+  categories: {
+    type: [String],
+    ref: "Category",
+  },
+  comments: {
+    type: [String],
+    ref: "Comment",
   },
   author: {
     type: mongoose.Schema.Types.ObjectId,
