@@ -12,6 +12,9 @@ const {
   NODEMAILER_USER,
   NODEMAILER_PASSWORD,
   NODEMAILER_SENDMAIL_TO,
+  CLD_CLOUD_NAME,
+  CLD_API_KEY,
+  CLD_API_SECRET,
 } = process.env;
 
 const enviromentConfig = {
@@ -32,6 +35,11 @@ const enviromentConfig = {
     user: NODEMAILER_USER,
     password: NODEMAILER_PASSWORD,
     sendTo: NODEMAILER_SENDMAIL_TO,
+  },
+  cloudinary: {
+    name: CLD_CLOUD_NAME,
+    apiKey: CLD_API_KEY,
+    apiSecret: CLD_API_SECRET,
   },
 };
 
