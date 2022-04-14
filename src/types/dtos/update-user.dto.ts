@@ -15,6 +15,10 @@ export class UpdateUserDTO {
   nickname?: string;
 
   @IsNotEmpty()
+  @IsString()
+  avatar?: string;
+
+  @IsNotEmpty()
   @IsEmail()
   email?: string;
 

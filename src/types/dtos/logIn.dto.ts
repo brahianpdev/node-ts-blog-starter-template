@@ -6,8 +6,5 @@ export class LogInDto {
   public email: string;
 
   @IsNotEmpty()
-  public isEmailConfirmed: boolean;
-
-  @IsNotEmpty()
   public password: string;
 }
