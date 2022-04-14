@@ -9,14 +9,13 @@ class AuthenticationController {
     const userData: RegisterDTO = req.body;
 
     try {
-      const { cookie, user } = await new AuthenticationService().register({
+      const { cookie } = await new AuthenticationService().register({
         ...userData,
       });
 
       res.setHeader("Set-Cookie", [cookie]);
       return res.json({
         message: "User registered successfully, please confirm your email",
-        user, 
       });
     } catch (error) {
       throw new Error(error);
@@ -27,14 +26,13 @@ class AuthenticationController {
     const loginDTO: LogInDto = req.body;
 
     try {
-      const { cookie, user } = await new AuthenticationService().login({
+      const { cookie } = await new AuthenticationService().login({
         ...loginDTO,
       });
 
       res.setHeader("Set-Cookie", [cookie]);
       return res.json({
         message: "User logged in successfully",
-        user,
       });
     } catch (error) {
       throw new Error(error);
@@ -56,7 +54,6 @@ class AuthenticationController {
 
       return res.json({
         message: "User verified successfully",
-        user,
       });
     } catch (error) {
       throw new Error(error);
