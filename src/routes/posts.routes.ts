@@ -3,6 +3,7 @@ const routes = Router();
 
 import postsController from "../controllers/posts.controller";
 import authMiddleware from "../middlewares/authentication.middleware";
+import { isAdminMiddelware } from "../middlewares/isAdminMiddelware";
 import validationMiddleware from "../middlewares/validation.middleware";
 import { CreatePostDTO } from "../types/dtos/create-post.dto";
 import { UpdatePostDTO } from "../types/dtos/update-post.dto";
@@ -39,7 +40,12 @@ routes
     validationMiddleware(UpdatePostDTO),
     postsController.update
   )
-  
-  .delete("/delete/:id", authMiddleware, postsController.delete);
+
+  .delete(
+    "/delete/:id",
+    authMiddleware,
+    isAdminMiddelware,
+    postsController.delete
+  );
 
 export default routes;
