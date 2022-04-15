@@ -6,5 +6,6 @@ export class UpdateCommentDTO {
   @MinLength(4)
   @MaxLength(120)
   content?: string;
+  author: string;
   state?: boolean;
 }
