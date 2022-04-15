@@ -39,28 +39,42 @@ export class PostsService {
     }
   }
 
-  async update(id: string, updatePostDTO: UpdatePostDTO) {
+  async update(id: string, updatePostDTO: UpdatePostDTO, author: User) {
     try {
-      return await Post.findByIdAndUpdate(id, updatePostDTO, { new: true });
+      const post = await Post.findById(id);
+
+      if (author._id !== post.author) {
+        throw new Error("You are not the author of this post");
+      }
+
+      return await Post.findByIdAndUpdate(
+        id,
+        { ...updatePostDTO, author },
+        { new: true }
+      );
     } catch (error) {
       throw new Error(error);
     }
   }
 
-  async remove(id: string) {
-    try {
-      return await Post.findByIdAndUpdate(id, { status: false }, { new: true });
-    } catch (error) {
-      throw new Error(error);
+  async remove(id: string, author: User) {
+    const post = await Post.findById(id);
+
+    if (author._id !== post.author) {
+      throw new Error("You are not the author of this post");
     }
+
+    return await Post.findByIdAndUpdate(id, { status: false }, { new: true });
   }
 
-  async publish(id: string) {
-    try {
-      return await Post.findByIdAndUpdate(id, { status: true }, { new: true });
-    } catch (error) {
-      throw new Error(error);
+  async publish(id: string, author: User) {
+    const post = await Post.findById(id);
+
+    if (author._id !== post.author) {
+      throw new Error("You are not the author of this post");
     }
+
+    return await Post.findByIdAndUpdate(id, { status: true }, { new: true });
   }
 
   async delete(id: string) {
