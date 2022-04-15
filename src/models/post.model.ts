@@ -18,14 +18,18 @@ const Post = new Schema({
     type: Boolean,
     default: true,
   },
-  categories: {
-    type: [String],
-    ref: "Category",
-  },
-  comments: {
-    type: [String],
-    ref: "Comment",
-  },
+  categories: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+    },
+  ],
+  comments: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comment",
+    },
+  ],
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

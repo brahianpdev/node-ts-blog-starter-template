@@ -6,6 +6,10 @@ const Comment = new Schema({
     type: String,
     required: true,
   },
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
   status: {
     type: Boolean,
     default: true,
