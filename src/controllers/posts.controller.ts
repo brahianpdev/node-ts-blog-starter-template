@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { PostsService } from "../services/posts.service";
-import { CreatePostDTO } from "../types/dtos/create-post.dto";
 import RequestWithUser from "../types/interfaces/requestWithUser.interface";
 
 class PostsController {
@@ -31,7 +30,7 @@ class PostsController {
   }
 
   async create(req: RequestWithUser, res: Response) {
-    const postData: CreatePostDTO = req.body;
+    const postData = req.body;
     const author: any = req.user._id;
 
     const post = await new PostsService().create(postData, author);
@@ -41,11 +40,12 @@ class PostsController {
     });
   }
 
-  async update(req: Request, res: Response) {
-    const { id } = req.params;
-    const { title, content } = req.body;
+  async update(req: RequestWithUser, res: Response) {
+    const postData = req.body;
+    const author: any = req.user._id;
+    const id = req.params.id;
 
-    const post = await new PostsService().update(id, { title, content });
+    const post = await new PostsService().update(id, postData, author);
 
     if (!post) {
       return res.status(404).json({
@@ -59,10 +59,11 @@ class PostsController {
     });
   }
 
-  async remove(req: Request, res: Response) {
-    const { id } = req.params;
+  async remove(req: RequestWithUser, res: Response) {
+    const author: any = req.user._id;
+    const id = req.params.id;
 
-    const post = await new PostsService().remove(id);
+    const post = await new PostsService().remove(id, author);
 
     if (!post) {
       return res.status(404).json({
@@ -76,21 +77,20 @@ class PostsController {
     });
   }
 
-  async publish(req: Request, res: Response) {
-    const { id } = req.params;
+  async publish(req: RequestWithUser, res: Response) {
+    const author: any = req.user._id;
+    const id = req.params.id;
 
-    const post = await new PostsService().publish(id);
-
+    const post = await new PostsService().publish(id, author);
     if (!post) {
       return res.status(404).json({
         message: "Post not found",
       });
     }
 
-    res.json({
+    return res.json({
       message: "Post published successfully",
-      post,
-    });
+    })
   }
 
   async delete(req: Request, res: Response) {
