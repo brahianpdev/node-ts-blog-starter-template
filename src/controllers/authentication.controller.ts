@@ -25,18 +25,14 @@ class AuthenticationController {
   async login(req: Request, res: Response) {
     const loginDTO: LogInDto = req.body;
 
-    try {
-      const { cookie } = await new AuthenticationService().login({
-        ...loginDTO,
-      });
+    const { cookie } = await new AuthenticationService().login({
+      ...loginDTO,
+    });
 
-      res.setHeader("Set-Cookie", [cookie]);
-      return res.json({
-        message: "User logged in successfully",
-      });
-    } catch (error) {
-      throw new Error(error);
-    }
+    res.setHeader("Set-Cookie", [cookie]);
+    return res.json({
+      message: "User logged in successfully",
+    });
   }
 
   async logout(req: Request, res: Response) {
@@ -49,15 +45,11 @@ class AuthenticationController {
   async verifyAccount(req: Request, res: Response) {
     const { userId, token } = req.params;
 
-    try {
-      const user = await new AuthenticationService().verifyAccount(userId, token);
+    const user = await new AuthenticationService().verifyAccount(userId, token);
 
-      return res.json({
-        message: "User verified successfully",
-      });
-    } catch (error) {
-      throw new Error(error);
-    }
+    return res.json({
+      message: "User verified successfully",
+    });
   }
 }
 
