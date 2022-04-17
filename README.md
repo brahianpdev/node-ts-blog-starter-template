@@ -24,7 +24,7 @@ La plantilla de inicio tiene funcionalidades básicas que se detallarán en la d
 - MongoDB (Base de datos)
 - Postman (Test & Documentación)
 
-> ***Puedes revisar la documentación de los Endpoints para cada feature desde este link.***
+> ***Puedes revisar la documentación de los Endpoints para cada feature desde este [link](https://documenter.getpostman.com/view/18310822/Uyr5oeZm).***
 > 
 
 ## Instalaciones y configuraciones necesarias:
