@@ -29,6 +29,10 @@ const User = new Schema({
     type: String,
     required: true,
   },
+  created_at: {
+    type: Date,
+    default: Date.now,
+  }
 });
 
 export default mongoose.model("User", User);
