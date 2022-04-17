@@ -72,6 +72,16 @@ export class UsersService {
     }
   }
 
+  async uploadAvatar(id: string, avatar: any) {
+    const user = await User.findById(id);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    return await User.findByIdAndUpdate(id, { avatar });
+  }
+
   async deleteUser(id: string) {
     try {
       return await User.findByIdAndDelete(id);
