@@ -6,6 +6,7 @@ import authMiddleware from "../middlewares/authentication.middleware";
 import { isAdminMiddelware } from "../middlewares/isAdminMiddelware";
 import validationMiddleware from "../middlewares/validation.middleware";
 import { UpdateUserDTO } from "../types/dtos/update-user.dto";
+import upload from "../configuration/multerConfig";
 
 routes
   .get("/", usersController.getAllUsers)
@@ -22,6 +23,13 @@ routes
     authMiddleware,
     validationMiddleware(UpdateUserDTO),
     usersController.updateUser
+  )
+
+  .post(
+    "/upload/:id",
+    authMiddleware,
+    upload.single("file"),
+    usersController.uploadAvatar
   )
 
   .delete(
