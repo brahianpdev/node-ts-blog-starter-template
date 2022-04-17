@@ -67,6 +67,24 @@ class UsersController {
     });
   }
 
+  async uploadAvatar(req: Request, res: Response) {
+    const avatar = req.file;
+    const id = req.params.id;
+
+    if (!avatar) {
+      return res.status(400).json({
+        message: "Please upload an avatar",
+      });
+    }
+
+    await new UsersService().uploadAvatar(id, avatar.path);
+
+    return res.json({
+      message: "Profile picture updated",
+      file: avatar,
+    });
+  }
+
   async deleteUser(req: Request, res: Response) {
     const { id } = req.params;
 
