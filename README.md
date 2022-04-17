@@ -4,7 +4,7 @@
 
 # Starter Template - [Blog]
 
-Este es un proyecto a modo de investigación práctica donde busco implementar buenas prácticas.
+Este es un proyecto a modo de investigación donde busco implementar buenas prácticas de código limpio, así como explorar los principios SOLID e indagar sobre las necesidades de los patrones de diseño.
 
 La plantilla de inicio tiene funcionalidades básicas que se detallarán en la documentación de los *endpoints* correspondientes.
 
